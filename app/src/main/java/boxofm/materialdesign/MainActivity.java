@@ -28,6 +28,8 @@ import java.util.List;
 
 import Model.Card;
 
+import static boxofm.materialdesign.BuildConfig.DEBUG;
+
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -46,7 +48,7 @@ public class MainActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v(TAG, "onCreate()");
+        if (DEBUG) {Log.v(TAG, "onCreate()");}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -129,7 +131,7 @@ public class MainActivity extends Activity
          * number.
          */
         public static PlaceholderFragment newInstance(int sectionNumber) {
-            Log.v(TAG, "PlaceholderFragment newInstance with sectionNumber: " + sectionNumber);
+            if (DEBUG) { Log.v(TAG, "PlaceholderFragment newInstance with sectionNumber: " + sectionNumber);}
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -142,21 +144,21 @@ public class MainActivity extends Activity
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            Log.v(TAG, "PlaceholderFragment onCreateView");
+            if (DEBUG) {Log.v(TAG, "PlaceholderFragment onCreateView");}
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
 
         @Override
         public void onAttach(Activity activity) {
-            Log.v(TAG, "PlaceholderFragment onAttach");
+            if (DEBUG) {Log.v(TAG, "PlaceholderFragment onAttach");}
             super.onAttach(activity);
             ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
         @Override
         public void onStart() {
-            Log.v(TAG, "PlaceholderFragment onStart");
+            if (DEBUG) {Log.v(TAG, "PlaceholderFragment onStart");}
             super.onStart();
             RecyclerView recList = (RecyclerView) getActivity().findViewById(R.id.cardList);
             recList.setHasFixedSize(true);
