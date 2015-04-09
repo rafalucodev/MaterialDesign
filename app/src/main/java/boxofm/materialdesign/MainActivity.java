@@ -1,37 +1,19 @@
 package boxofm.materialdesign;
 
-import android.app.Activity;
-
-import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import Model.Card;
-
-import static boxofm.materialdesign.BuildConfig.DEBUG;
+import Fragments.VerticalFragment;
 
 
-public class MainActivity extends Activity
+public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private static final String TAG = "MainActivity";
@@ -48,7 +30,7 @@ public class MainActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (DEBUG) {Log.v(TAG, "onCreate()");}
+        Log.v(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -62,9 +44,27 @@ public class MainActivity extends Activity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        //fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position + 1)).commit();
-        fragmentManager.beginTransaction().replace(R.id.drawer_layout, PlaceholderFragment.newInstance(position + 1)).commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        switch (position) {
+            case 0:
+                ft.replace(R.id.container, VerticalFragment.newInstance());
+                break;
+            /*case 1:
+                ft.replace(R.id.container, HorizontalFragment.newInstance());
+                break;
+            case 2:
+                ft.replace(R.id.container, VerticalGridFragment.newInstance());
+                break;
+            case 3:
+                ft.replace(R.id.container, FixedTwoWayFragment.newInstance());
+                break;*/
+            default:
+                //Do nothing
+                break;
+        }
+
+        ft.commit();
     }
 
     public void onSectionAttached(int number) {
@@ -82,10 +82,11 @@ public class MainActivity extends Activity
     }
 
     public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
     }
 
 
@@ -115,74 +116,5 @@ public class MainActivity extends Activity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            if (DEBUG) { Log.v(TAG, "PlaceholderFragment newInstance with sectionNumber: " + sectionNumber);}
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            if (DEBUG) {Log.v(TAG, "PlaceholderFragment onCreateView");}
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            if (DEBUG) {Log.v(TAG, "PlaceholderFragment onAttach");}
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
-        }
-
-        @Override
-        public void onStart() {
-            if (DEBUG) {Log.v(TAG, "PlaceholderFragment onStart");}
-            super.onStart();
-            RecyclerView recList = (RecyclerView) getActivity().findViewById(R.id.cardList);
-            recList.setHasFixedSize(true);
-            LinearLayoutManager llm = new LinearLayoutManager(this.getActivity());
-            llm.setOrientation(LinearLayoutManager.VERTICAL);
-            recList.setLayoutManager(llm);
-
-            View rootView = getView();
-            CardViewAdapter mCardViewAdapter = new CardViewAdapter(createList(5, rootView));
-            recList.setAdapter(mCardViewAdapter);
-        }
-    }
-
-    private static List<Card> createList(int size, View view) {
-
-        Log.v(TAG, "List<Card> createList");
-        List<Card> result = new ArrayList<Card>();
-        for (int i=1; i <= size; i++) {
-            Card c = new Card();
-            c.imageView = (ImageView) view.findViewById(R.id.imageView);
-            c.textView = (TextView) view.findViewById(R.id.info_text);
-            result.add(c);
-        }
-        return result;
     }
 }

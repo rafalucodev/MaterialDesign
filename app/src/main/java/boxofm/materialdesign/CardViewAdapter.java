@@ -5,24 +5,54 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Model.Card;
 
-/**
- * Created by Hasnain on 3/31/2015.
- */
 public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardViewHolder> {
 
     private static final String TAG = "CardViewAdapter";
     private List<Card> cardList;
+    private AdapterView.OnItemClickListener mOnItemClickListener;
 
-    public CardViewAdapter(List<Card> list) {
-        this.cardList = list;
+    public static class CardViewHolder extends RecyclerView.ViewHolder {
+
+        protected ImageView imageView;
+        protected TextView textView;
+
+        public CardViewHolder(View v) {
+            super(v);
+            Log.v(TAG, "CardViewHolder onBindViewHolder");
+            imageView =  (ImageView) v.findViewById(R.id.imageView);
+            textView = (TextView)  v.findViewById(R.id.info_text);
+        }
     }
+
+    public CardViewAdapter() {
+        cardList = new ArrayList<Card>();
+    }
+
+    public List<Card> createList(int size, View view) {
+
+        Log.v(TAG, "List<Card> createList");
+        List<Card> result = new ArrayList<Card>();
+        for (int i=1; i <= size; i++) {
+            Card c = new Card();
+            c.imageView = (ImageView) view.findViewById(R.id.imageView);
+            c.textView = (TextView) view.findViewById(R.id.info_text);
+            result.add(c);
+        }
+        return result;
+    }
+
+    /*public CardViewAdapter(List<Card> list) {
+        this.cardList = list;
+    }*/
 
     @Override
     public int getItemCount() {
@@ -43,16 +73,14 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardVi
         return new CardViewHolder(itemView);
     }
 
-    public static class CardViewHolder extends RecyclerView.ViewHolder {
+    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
 
-        protected ImageView imageView;
-        protected TextView textView;
-
-        public CardViewHolder(View v) {
-            super(v);
-            Log.v(TAG, "CardViewHolder onBindViewHolder");
-            imageView =  (ImageView) v.findViewById(R.id.imageView);
-            textView = (TextView)  v.findViewById(R.id.info_text);
+    private void onItemHolderClick(CardViewHolder itemHolder) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemClick(null, itemHolder.itemView,
+                    itemHolder.getPosition(), itemHolder.getItemId());
         }
     }
 }
